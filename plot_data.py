@@ -2,27 +2,33 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from constants import *
+import sys
 
-# List of stock tickers to process
-ticker_list = ['AAPL', 'MSFT', 'GOOGL', 'EBAY', 'AMZN']
+mode = sys.argv[1]
 
-# Define training and testing periods
-training_end = 2200
+if mode=='in':
+    ticker_list = ticker_list_india
+    training_end = training_end_india
+    test_periods = test_periods_india
+else:
+    ticker_list = ticker_list
+    training_end = training_end
+    test_periods = test_periods
 
-test_periods = [
-    (2201, 2270),  # Testing Period 1
-    (2350, 2450),  # Testing Period 2
-    (2601, 2680),  # Testing Period 3
-]
 
 def load_and_normalize_stocks(ticker_list):
     # Normalize the stock prices to start from 1.0
     normalized_stocks = []
     for ticker in ticker_list:
+        print(ticker)
         df = pd.read_csv(f'{ticker}.csv')
-        
-        # Ensure 'Close' column is numeric, converting errors to NaN
-        df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
+
+        print(df.head())
+        if 'TCS' in ticker:
+            df['Close'] = pd.to_numeric(df['Close'].str.replace('"', ''), errors='coerce')
+        else:
+            df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
         
         # Drop rows with NaN values in 'Close' (optional)
         df.dropna(subset=['Close'], inplace=True)
@@ -76,7 +82,7 @@ def get_price_plot(normalized_stocks):
     plt.xticks(xtick_numbers, [normalized_stocks[0]["Date"].iloc[idx] for idx in xtick_numbers])
     
     # Save and display the plot
-    plt.savefig('portfolio_train_test_split.eps', format='eps')
+    plt.savefig(f'portfolio_train_test_split_{mode}.png', format='png')
     plt.show()
 
 def plot_test_periods(stocks):
@@ -109,28 +115,28 @@ def plot_test_periods(stocks):
             label.set(rotation=20, horizontalalignment='right')
 
     plt.tight_layout()
-    plt.savefig('portfolio_test_periods.png', format='png')
+    plt.savefig(f'portfolio_test_periods_{mode}.png', format='png')
     plt.show()
 
-def plot_eval(profits, epsilons, scale_parametric, mode, period):
+def plot_eval(profits, epsilons, scale_parametric, mode2, period):
     print(profits)
     linestyle_list=["solid","dashed","dotted","dashdot"]*10
     for i in range(len(epsilons)):
-        if mode=="Wasserstein":
+        if mode2=="Wasserstein":
             plt.plot(np.cumsum(profits[i]),
                     label = r'$\varepsilon =$ ' + str(epsilons[i]),
                     linestyle = linestyle_list[i]
                     )
-        if mode=="Parametric":
+        if mode2=="Parametric":
             plt.plot(np.cumsum(profits[i]),
                 label = r'$\varepsilon =$ ' + str(np.round(epsilons[i]*scale_parametric,3)),
                 linestyle = linestyle_list[i]
                 )
     plt.grid(True)
-    plt.title(f"Cumulated Profit of Trained Strategy in Testing Period {period},\n {mode} Approach")
+    plt.title(f"Cumulated Profit of Trained Strategy in Testing Period {period},\n {mode2} Approach")
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f'trades_period_{period}_{mode}.png')
+    plt.savefig(f'trades_period_{period}_{mode2}.png')
     plt.show()
     plt.clf()
 
