@@ -1,7 +1,7 @@
 ticker_list = ['AAPL', 'MSFT', 'GOOGL', 'EBAY', 'AMZN']
 ticker_list_india = ['Quote-Equity-BPCL-EQ-EQ-20-05-2023-to-20-08-2023', 'Quote-Equity-ICICIBANK-EQ-20-05-2023-to-20-08-2023', 'Quote-Equity-TATASTEEL-EQ-20-05-2023-to-20-08-2023']
 
-epsilons = [0,0.01,0.05,0.1,0.3]
+epsilons = [0,0.1,0.3]
 
 scale_parametric = 0.5
 

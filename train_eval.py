@@ -79,9 +79,11 @@ for epsilon in epsilons:
                                         Nr_MC  = 2**3,
                                         alpha = 0.45)
 
-    RL_W.train(Epochs = 50,iterations_a=10,iterations_v=10)
+    print("Training with Wasserstein mode")
+    RL_W.train(Epochs = 30,iterations_a=5,iterations_v=5)
     a_W.append(RL_W.a)
-    RL_P.train(Epochs = 50,iterations_a=10,iterations_v=10)
+    print("Training with Parametric mode")
+    RL_P.train(Epochs = 30,iterations_a=5,iterations_v=5)
     a_P.append(RL_P.a)
 
 ################################################################
@@ -126,8 +128,8 @@ for period in test_periods:
         profits_W.append(profits_W_eps)
         profits_P.append(profits_P_eps)
     
-    plot_eval(profits_W, epsilons, scale_parametric, mode="Wasserstein", period=period)
-    plot_eval(profits_P, epsilons, scale_parametric, mode="Parametric", period=period)
+    plot_eval(profits_W, epsilons, scale_parametric, mode2="Wasserstein", period=period)
+    plot_eval(profits_P, epsilons, scale_parametric, mode2="Parametric", period=period)
 
     print("LEN: ", profits_P)
     # Statistics for Wasserstein 

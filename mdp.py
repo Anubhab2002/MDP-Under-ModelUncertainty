@@ -297,14 +297,14 @@ class Robust_Portfolio_Optimization:
     # The Training routine
     def train(self,Epochs = 10,iterations_a=5,iterations_v=5):
         for Epoch in tqdm(range(Epochs)):
-            print("\n#######\nEpoch {} \n#######\n".format(Epoch+1))
+            # print("\n#######\nEpoch {} \n#######\n".format(Epoch+1))
             # Transfer weights from v to old_v
             self.old_v = tf.keras.models.clone_model(self.v)
             self.old_v.set_weights(self.v.get_weights())
             self.old_v.trainable = False
             
             #Optimize v
-            for _ in tqdm(range(iterations_v), desc="Value Iteration"):
+            for _ in range(iterations_v):
                 #First generate a batch of states
                 X_0 = next(self.generate_batch()) # Size: (Batch,D,m)
                 # Minimize the difference between v and TV
@@ -314,7 +314,7 @@ class Robust_Portfolio_Optimization:
                 
             
             #Optimize a
-            for _ in tqdm(range(iterations_a), desc="Policy Iteration"):
+            for _ in range(iterations_a):
                 # Transfer Learning, Transfers weights from v to a
                 if self.transfer_learning:
                     for k in range(len(self.a.layers[:-4])):
