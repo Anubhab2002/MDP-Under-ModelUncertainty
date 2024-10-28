@@ -1,0 +1,4 @@
+,Overall Profit,Average Profit,% of Profitable Trades,Sharpe Ratio,Sortino Ratio
+Epsilon = 0.0,1.0277308,0.013522777,69.74,0.1740293,0.23986186
+Epsilon = 0.025,0.014128234,0.00018589776,55.26,0.09574482,0.1453444
+Epsilon = 0.15,-0.00026851386,-3.533078e-06,42.11,-0.027966665,-0.04220159

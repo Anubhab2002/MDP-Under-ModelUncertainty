@@ -6,7 +6,7 @@ import sys
 mode = sys.argv[1] # us or india
 
 start_date = '2010-01-01'
-end_date = '2024-09-30'
+end_date = '2022-12-31'
 
 def download_data(ticker, start_date, end_date):
     dataset = yfinance.download(ticker, start=start_date, end=end_date)

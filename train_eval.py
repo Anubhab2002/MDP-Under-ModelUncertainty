@@ -12,7 +12,10 @@ from plot_data import plot_eval
 from mdp import Robust_Portfolio_Optimization
 
 import os
+import sys
 import warnings
+
+mode = sys.argv[1]
 
 # Suppress TensorFlow and Keras warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow messages
@@ -127,6 +130,17 @@ for period in test_periods:
 
         profits_W.append(profits_W_eps)
         profits_P.append(profits_P_eps)
+
+    # save profits_W and profits_P
+    import pickle
+
+    profits_dict = {
+        'Wasserstein': profits_W,
+        'Parametric': profits_P
+    }
+
+    with open(f'ckpts/profits_{mode}_{epsilon}.pkl', 'wb') as f:
+        pickle.dump(profits_dict, f)
     
     plot_eval(profits_W, epsilons, scale_parametric, mode2="Wasserstein", period=period)
     plot_eval(profits_P, epsilons, scale_parametric, mode2="Parametric", period=period)
@@ -149,6 +163,7 @@ for period in test_periods:
     }
 
     df_W = pd.DataFrame(data=data_W, index=["Epsilon = {}".format(str(eps)) for eps in epsilons])
+    df_W.to_csv(f'ckpts/results_{mode}_{epsilon}_Wesserstein.csv')
     results[f'Wasserstein - Period {period}'] = df_W
 
 
@@ -169,6 +184,7 @@ for period in test_periods:
     }
 
     df_P = pd.DataFrame(data=data_P, index=["Epsilon = {}".format(np.round(eps * scale_parametric, 3)) for eps in epsilons])
+    df_P.to_csv(f'ckpts/results_{mode}_{epsilon}_Parametric.csv')
     results[f'Parametric - Period {period}'] = df_P
 
 

@@ -42,7 +42,8 @@ def get_price_plot(normalized_stocks):
     plt.figure(figsize=(12, 8))  
 
     # Define colors for each period
-    colors = ['lightcoral', 'darkkhaki', 'mediumaquamarine']
+    colors = ['red', 'blue', 'green']
+    colours_train = ['orange', 'yellow', 'purple', 'pink', 'steelblue', 'olive']
     labels_added = set()
 
     for i, stock_data in enumerate(normalized_stocks):
@@ -50,7 +51,7 @@ def get_price_plot(normalized_stocks):
         
         # Plot the training period
         plt.plot(range(training_end), close_prices[:training_end],
-                 color="steelblue", linewidth=1, label="Training Period" if "Training Period" not in labels_added else None)
+                 color=colours_train[i], linewidth=1, label=f"Training Period {ticker_list[i]}" if "Training Period" not in labels_added else None)
         
         # Plot each test period
         for j, (start, end) in enumerate(test_periods):
@@ -102,7 +103,7 @@ def plot_test_periods(stocks):
         start, end = test_periods[j]
         for data in normalized_period:
             axs[j].plot(range(start, end), data[start:end], linewidth=2,
-                        color=["lightcoral", "darkkhaki", "mediumaquamarine"][j])
+                        color=["red", "blue", "green"][j])
         
         # Set title and xticks for each subplot
         axs[j].set_title(f"Testing Period {j + 1}")
@@ -120,18 +121,27 @@ def plot_test_periods(stocks):
 
 def plot_eval(profits, epsilons, scale_parametric, mode2, period):
     print(profits)
-    linestyle_list=["solid","dashed","dotted","dashdot"]*10
+    
+    linestyle_list = ["solid", "dashed", "dotted", "dashdot"] * 10
+    color_list = ["blue", "orange", "green", "red", "purple", "brown", "pink", "gray", "olive", "cyan"] * 4
+    
     for i in range(len(epsilons)):
-        if mode2=="Wasserstein":
+        color = color_list[i % len(color_list)]
+        linestyle = linestyle_list[i % len(linestyle_list)]
+        
+        if mode2 == "Wasserstein":
             plt.plot(np.cumsum(profits[i]),
-                    label = r'$\varepsilon =$ ' + str(epsilons[i]),
-                    linestyle = linestyle_list[i]
+                     label=r'$\varepsilon =$ ' + str(epsilons[i]),
+                     linestyle=linestyle,
+                     color=color
                     )
-        if mode2=="Parametric":
+        elif mode2 == "Parametric":
             plt.plot(np.cumsum(profits[i]),
-                label = r'$\varepsilon =$ ' + str(np.round(epsilons[i]*scale_parametric,3)),
-                linestyle = linestyle_list[i]
-                )
+                     label=r'$\varepsilon =$ ' + str(np.round(epsilons[i] * scale_parametric, 3)),
+                     linestyle=linestyle,
+                     color=color
+                    )
+
     plt.grid(True)
     plt.title(f"Cumulated Profit of Trained Strategy in Testing Period {period},\n {mode2} Approach")
     plt.legend()
@@ -139,7 +149,6 @@ def plot_eval(profits, epsilons, scale_parametric, mode2, period):
     plt.savefig(f'trades_period_{period}_{mode2}.png')
     plt.show()
     plt.clf()
-
 
 # Main function to load data and create both plots
 if __name__ == "__main__":
