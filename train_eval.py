@@ -65,6 +65,7 @@ Returns_10periods_test_3 = tf.gather(Returns_10periods, range(test_period_3_star
 
 a_W, a_P = [], []
 for epsilon in epsilons:
+    print("******************Running for Error Margin*****************", epsilon)
     RL_W = Robust_Portfolio_Optimization(Returns_10periods_train,uncertainty = "Wasserstein",
                                         Nr_measures= 10,
                                         epsilon =epsilon,

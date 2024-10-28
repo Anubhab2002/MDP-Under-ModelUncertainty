@@ -304,17 +304,17 @@ class Robust_Portfolio_Optimization:
             self.old_v.trainable = False
             
             #Optimize v
-            for _ in range(iterations_v):
+            for _ in tqdm(range(iterations_v), desc="Value Iteration"):
                 #First generate a batch of states
                 X_0 = next(self.generate_batch()) # Size: (Batch,D,m)
                 # Minimize the difference between v and TV
                 loss_value_v_most_recent, grads_v = self.grad_optimization_v(X_0)
                 self.optimizer_v.apply_gradients(zip(grads_v, self.v.trainable_variables))
-                print("V: {}".format(loss_value_v_most_recent))
+                # print("V: {}".format(loss_value_v_most_recent))
                 
             
             #Optimize a
-            for _ in range(iterations_a):
+            for _ in tqdm(range(iterations_a), desc="Policy Iteration"):
                 # Transfer Learning, Transfers weights from v to a
                 if self.transfer_learning:
                     for k in range(len(self.a.layers[:-4])):
@@ -325,7 +325,7 @@ class Robust_Portfolio_Optimization:
                 #Optimize a
                 loss_value_a, grads_a = self.grad_optimization_a(X_0)
                 self.optimizer_a.apply_gradients(zip(grads_a, self.a.trainable_variables))
-                print("a: {}".format(-loss_value_a.numpy()))
+                # print("a: {}".format(-loss_value_a.numpy()))
 
 
 
